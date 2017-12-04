@@ -82,6 +82,15 @@
                             <?php } ?>
                         </select></td>
                     </tr>
+                    <tr>
+                        <td><?php echo $entry_pricefrom; ?></td>
+                        <td><input name="yandex_market_pricefrom" value="<?php echo $yandex_market_pricefrom; ?>" size="10">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?php echo $entry_ignore_absent; ?></td>
+                        <td><input type="checkbox" name="yandex_market_ignore_absent" value="1" <?php echo ($yandex_market_ignore_absent ? 'checked ' : ''); ?>/></td>
+                    </tr>
                     <!-- BRANDS ADDED-->
 
                 </table>

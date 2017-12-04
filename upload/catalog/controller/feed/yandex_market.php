@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Класс YML экспорта
  * YML (Yandex Market Language) - стандарт, разработанный "Яндексом"
@@ -66,13 +67,18 @@ class ControllerFeedYandexMarket extends Controller
             $in_stock_id = $this->config->get('yandex_market_in_stock'); // id статуса товара "В наличии"
             $out_of_stock_id = $this->config->get('yandex_market_out_of_stock'); // id статуса товара "Нет на складе"
             $vendor_required = false; // true - только товары у которых задан производитель, необходимо для 'vendor.model'
-            $products = $this->model_export_yandex_market->getProduct($allowed_categories, $out_of_stock_id, $vendor_required);
+            $products = $this->model_export_yandex_market->getProduct($allowed_categories, $out_of_stock_id, $vendor_required, $this->config->get('yandex_market_pricefrom'));
 
 
             //отфильтровуем продукты по доступным брендам
             $products = $this->model_export_yandex_market->brandsFilter($products);
 
+            $ignore_absent = $this->config->get('yandex_market_ignore_absent');
+
             foreach ($products as $product) {
+                if ($ignore_absent && $product['quantity'] == 0) {
+                    continue;
+                }
                 $data = array();
 
                 // Атрибуты товарного предложения
@@ -99,7 +105,7 @@ class ControllerFeedYandexMarket extends Controller
 
             $this->categories = array_filter($this->categories, array($this, "filterCategory"));
 
-            $this->response->addHeader('Content-Type: application/xml');
+            $this->response->addHeader('Content-Type: application/xml; charset=utf-8');
             $this->response->setOutput($this->getYml());
         }
     }

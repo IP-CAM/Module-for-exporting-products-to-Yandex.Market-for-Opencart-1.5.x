@@ -1,4 +1,5 @@
 <?php
+
 class ControllerFeedYandexMarket extends Controller
 {
     private $error = array();
@@ -35,8 +36,8 @@ class ControllerFeedYandexMarket extends Controller
         $this->document->addStyle(HTTPS_SERVER . 'view/stylesheet/feed/yandex_market.css');
 
         // Получение локализированных значений для ключевых элементов страницы
-        $this->data['entry_data_feed']      = $this->language->get('entry_data_feed');
-        $this->data['entry_stock_status']   = $this->language->get('entry_stock_status');
+        $this->data['entry_data_feed'] = $this->language->get('entry_data_feed');
+        $this->data['entry_stock_status'] = $this->language->get('entry_stock_status');
 
         $this->data['heading_title'] = $this->language->get('heading_title');
 
@@ -51,6 +52,8 @@ class ControllerFeedYandexMarket extends Controller
         $this->data['entry_company'] = $this->language->get('entry_company');
         $this->data['entry_category'] = $this->language->get('entry_category');
         $this->data['entry_currency'] = $this->language->get('entry_currency');
+        $this->data['entry_pricefrom'] = $this->language->get('entry_pricefrom');
+        $this->data['entry_ignore_absent'] = $this->language->get('entry_ignore_absent');
         $this->data['entry_in_stock'] = $this->language->get('entry_in_stock');
         $this->data['entry_out_of_stock'] = $this->language->get('entry_out_of_stock');
 
@@ -111,10 +114,22 @@ class ControllerFeedYandexMarket extends Controller
             $this->data['yandex_market_company'] = $this->config->get('yandex_market_company');
         }
 
+        if (isset($this->request->post['yandex_market_ignore_absent'])) {
+            $this->data['yandex_market_ignore_absent'] = $this->request->post['yandex_market_ignore_absent'];
+        } else {
+            $this->data['yandex_market_ignore_absent'] = $this->config->get('yandex_market_ignore_absent');
+        }
+
         if (isset($this->request->post['yandex_market_currency'])) {
             $this->data['yandex_market_currency'] = $this->request->post['yandex_market_currency'];
         } else {
             $this->data['yandex_market_currency'] = $this->config->get('yandex_market_currency');
+        }
+
+        if (isset($this->request->post['yandex_market_pricefrom'])) {
+            $this->data['yandex_market_pricefrom'] = $this->request->post['yandex_market_pricefrom'];
+        } else {
+            $this->data['yandex_market_pricefrom'] = $this->config->get('yandex_market_pricefrom');
         }
 
         if (isset($this->request->post['yandex_market_in_stock'])) {
@@ -214,9 +229,9 @@ class ControllerFeedYandexMarket extends Controller
 
             foreach ($this->model_catalog_manufacturer->getManufacturers() as $m) {
                 $json['results'][] = array(
-                    'checked'   => (is_array($status_brands) && in_array($m['manufacturer_id'], $status_brands)),
-                    'id'        => $m['manufacturer_id'],
-                    'name'      => $m['name'],
+                    'checked' => (is_array($status_brands) && in_array($m['manufacturer_id'], $status_brands)),
+                    'id' => $m['manufacturer_id'],
+                    'name' => $m['name'],
                 );
             }
         }
